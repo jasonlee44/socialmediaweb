@@ -1,0 +1,117 @@
+
+<!-- Welcome to some sample code to control your Firebase Database -->
+<!-- HERE IS YOUR HTML TO SET UP YOUR PAGE -->
+<html>
+    <head>
+        <!-- HERE ARE YOUR FIREBASE and GOOGLE AUTHENICATION IMPORTS -->
+        <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+    </head>
+    <body>
+        <h2 id="uid"></h2>
+        <p id="uid2"></p>
+        <button onclick="signin()">Sign in</button>
+        <button onclick="getData()">Get data</button>
+        <button onclick="setData()">Set data</button>
+        <button onclick="updateData()">Update data</button>
+        <button onclick="pushData()">Push data</button>
+        <button onclick="removeData()">Remove data</button>
+        <div id="info"></div>
+        <input type="text" id="entry" size=40 maxlength=280 value="Some text...">
+        <p id="output"></p>
+    </body>
+
+    <style>
+        body{
+            background-color: rgb(0, 255, 179);
+            font-family: 'Source Sans Pro', sans-serif;
+            margin-left: 10px;
+        }
+        input{
+            margin-top: 20px;
+        }
+        button{
+            margin-right:10px;
+            height:25px;
+            width: 90px;
+            border-radius: 15px;
+            border-color: black;
+            border-width: 2px;
+        }
+        button:hover{
+            background-color: rgba(130, 130, 130, 0.748);
+        }
+    </style>
+    
+    <!-- HERE IS THE JAVASCRIPT TO CONNECT TO YOUR FIREBASE -->
+    <script>
+        // Your web app's Firebase configuration
+        var config = {
+            apiKey: "AIzaSyDiugQRzZw_xml3D05Xv2kbnsp643z-grY",
+            authDomain: "basic-41a8d.firebaseapp.com",
+            databaseURL: "https://basic-41a8d.firebaseio.com",
+            projectId: "basic-41a8d",
+            storageBucket: "basic-41a8d.appspot.com",
+            messagingSenderId: "773162564169",
+            appId: "1:773162564169:web:05ab52d8cef59307cddd98",
+            measurementId: "G-57SPDCGJBG"
+          };
+        firebase.initializeApp(config);
+               
+        // Check to see if you are logged in
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user == null) {
+                document.getElementById("uid").innerHTML = "not logged in";
+                return;
+            } else {
+                userId = "User: "+ user.displayName; // you can also get .displayName, .photoURL, .email
+                document.getElementById("uid").innerHTML = userId; // display Google uid on page
+                userId2 = "Email: "+ user.email;
+                document.getElementById("uid2").innerHTML = userId2;
+            } // end user null check
+        }); // end check auth state
+        
+       // HERE IS THE FUNCTION TO SHOW HOW TO GET USER DATA
+       function getData() {
+           var userId = document.getElementById("uid").innerHTML;
+           firebase.database().ref('/tweets/' + userId).once('value', function(snapshot) {
+               console.log(snapshot.val());
+           });
+
+       }
+       
+       // HERE IS THE FUNCTION TO SHOW HOW TO SET/OVERWRITE USER DATA
+       function setData() {
+           var userId = document.getElementById("uid").innerHTML;
+           var js_time = Date.now();
+           firebase.database().ref('/tweets/' + userId).set({tweet:"Set over-writes", time: js_time}); 
+       }
+        
+       // HERE IS THE FUNCTION TO SHOW HOW TO SET/OVERWRITE USER DATA
+       function updateData() {
+           var userId = document.getElementById("uid").innerHTML;
+           firebase.database().ref('/tweets/' + userId).update({tweet:"Update replaces data, but will leave non replaced data as is"}); 
+       }
+         
+        // HERE IS THE FUNCTION TO SHOW HOW TO PUSH/ADD NEW USER DATA TO EXISTING DATABASE
+        function pushData() {
+            var tweet = document.getElementById("entry").value;
+            var js_time = Date.now();
+            var tweetid = firebase.database().ref('tweets/' + userId + "/").push({tweet: tweet, time: js_time});
+        }
+
+        // HERE IS THE FUNCTION TO SHOW HOW TO REMOVE USER DATA FROM EXISTING DATABASE - BE CAREFUL!
+        function removeData() {
+            var tweetid = firebase.database().ref('tweets/' + userId + "/").remove();
+        }
+        
+        function signin() {
+            var provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider).then(function(result) { 
+                window.location.replace("fbtest.html");
+            });
+        }
+    </script>
+</html>
