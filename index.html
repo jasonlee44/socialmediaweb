@@ -1,6 +1,3 @@
-
-<!-- Welcome to some sample code to control your Firebase Database -->
-<!-- HERE IS YOUR HTML TO SET UP YOUR PAGE -->
 <html>
     <head>
         <!-- HERE ARE YOUR FIREBASE and GOOGLE AUTHENICATION IMPORTS -->
@@ -10,22 +7,23 @@
         <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
     </head>
     <body>
-        <h2 id="uid"></h2>
+        <img id=uidImg height=40 width=40></img>
+        <h2 id="uid" style="float:right; margin-right:89%; margin-top:8px;"></h2>
         <p id="uid2"></p>
-        <button onclick="signin()">Sign in</button>
-        <button onclick="getData()">Get data</button>
-        <button onclick="setData()">Set data</button>
-        <button onclick="updateData()">Update data</button>
-        <button onclick="pushData()">Push data</button>
-        <button onclick="removeData()">Remove data</button>
+        <div style="margin-top: 10px;">
+            <button onclick="signin()">Sign in</button>
+            <button onclick="getData()">Display message</button>
+            <button onclick="pushData()">Push message</button>
+            <button onclick="removeData()">Delete message</button>
+        </div>
         <div id="info"></div>
-        <input type="text" id="entry" size=40 maxlength=280 value="Some text...">
+        <input onclick="entrybox()" type="text" id="entry" size=40 maxlength=280 value="Write here..." style="height: 25px; font-size: 15px;"></input>
         <p id="output"></p>
     </body>
 
     <style>
         body{
-            background-color: rgb(0, 255, 179);
+            background-color: rgb(255, 255, 255);
             font-family: 'Source Sans Pro', sans-serif;
             margin-left: 10px;
         }
@@ -35,13 +33,19 @@
         button{
             margin-right:10px;
             height:25px;
-            width: 90px;
+            width: 110px;
             border-radius: 15px;
             border-color: black;
             border-width: 2px;
         }
         button:hover{
             background-color: rgba(130, 130, 130, 0.748);
+        }
+        #uidImg{
+            border: black 2px solid;
+            border-radius: 0%;
+            /* padding: 5px; */
+            /* float:left; */
         }
     </style>
     
@@ -66,45 +70,42 @@
                 document.getElementById("uid").innerHTML = "not logged in";
                 return;
             } else {
-                userId = "User: "+ user.displayName; // you can also get .displayName, .photoURL, .email
+                userId = user.displayName // you can also get .displayName, .photoURL, .email
                 document.getElementById("uid").innerHTML = userId; // display Google uid on page
                 userId2 = "Email: "+ user.email;
                 document.getElementById("uid2").innerHTML = userId2;
+                userfb = userId2.split(".").join("_");
+                userImg = user.photoURL;
+                document.getElementById("uidImg").src = userImg;
             } // end user null check
         }); // end check auth state
         
        // HERE IS THE FUNCTION TO SHOW HOW TO GET USER DATA
        function getData() {
            var userId = document.getElementById("uid").innerHTML;
-           firebase.database().ref('/tweets/' + userId).once('value', function(snapshot) {
+           firebase.database().ref('/messages/' + userfb).once('value', function(snapshot) {
                console.log(snapshot.val());
            });
 
        }
-       
-       // HERE IS THE FUNCTION TO SHOW HOW TO SET/OVERWRITE USER DATA
-       function setData() {
-           var userId = document.getElementById("uid").innerHTML;
-           var js_time = Date.now();
-           firebase.database().ref('/tweets/' + userId).set({tweet:"Set over-writes", time: js_time}); 
-       }
-        
-       // HERE IS THE FUNCTION TO SHOW HOW TO SET/OVERWRITE USER DATA
-       function updateData() {
-           var userId = document.getElementById("uid").innerHTML;
-           firebase.database().ref('/tweets/' + userId).update({tweet:"Update replaces data, but will leave non replaced data as is"}); 
-       }
          
         // HERE IS THE FUNCTION TO SHOW HOW TO PUSH/ADD NEW USER DATA TO EXISTING DATABASE
         function pushData() {
-            var tweet = document.getElementById("entry").value;
-            var js_time = Date.now();
-            var tweetid = firebase.database().ref('tweets/' + userId + "/").push({tweet: tweet, time: js_time});
+            var message = document.getElementById("entry").value;
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var js_time = date+' '+time;
+            var messageid = firebase.database().ref('messages/' + userfb + "/").push({message: message, time: js_time});
+            document.getElementById("entry").value = "";
         }
 
         // HERE IS THE FUNCTION TO SHOW HOW TO REMOVE USER DATA FROM EXISTING DATABASE - BE CAREFUL!
         function removeData() {
-            var tweetid = firebase.database().ref('tweets/' + userId + "/").remove();
+            firebase.database().ref('/messages/' + userfb).once('value', function(snapshot) {
+                var messageid = firebase.database().ref('messages/' + userfb + "/" + Object.keys(snapshot.val())[snapshot.numChildren()-1]).remove();
+           });
+            
         }
         
         function signin() {
@@ -112,6 +113,10 @@
             firebase.auth().signInWithRedirect(provider).then(function(result) { 
                 window.location.replace("fbtest.html");
             });
+        }
+
+        function entrybox(){
+            document.getElementById("entry").value = "";
         }
     </script>
 </html>
