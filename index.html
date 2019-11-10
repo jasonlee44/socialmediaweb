@@ -4,7 +4,6 @@
         <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
         <script src="https://apis.google.com/js/platform.js" async defer></script>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
     </head>
     <body>
         <img id=uidImg height=40 width=40></img>
@@ -13,11 +12,11 @@
         <div style="margin-top: 10px;">
             <button onclick="signin()">Sign in</button>
             <button onclick="getData()">Display message</button>
-            <button onclick="pushData()">Push message</button>
+            <button id="pushdata" onclick="pushData()">Push message</button>
             <button onclick="removeData()">Delete message</button>
         </div>
         <div id="info"></div>
-        <input onclick="entrybox()" type="text" id="entry" size=40 maxlength=280 value="Write here..." style="height: 25px; font-size: 15px;"></input>
+        <input onclick="entrybox()" type="text" id="entry" size=40 maxlength=280 value="Write message here..." style="height: 25px; font-size: 15px;"></input>
         <p id="output"></p>
     </body>
 
@@ -117,6 +116,14 @@
 
         function entrybox(){
             document.getElementById("entry").value = "";
+            var input = document.getElementById("entry");
+            input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+                console.log("Hi")
+                event.preventDefault();
+                document.getElementById("pushdata").click();
+            }
+            });
         }
     </script>
 </html>
