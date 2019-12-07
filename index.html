@@ -1,174 +1,100 @@
 <html>
     <head>
-        <!-- HERE ARE YOUR FIREBASE and GOOGLE AUTHENICATION IMPORTS -->
-        <script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-    </head>
-    <body>
-        <img id=uidImg height=40 width=40></img>
-        <h1 id="uid" style="position: relative; padding-top:4px; padding-left:55px;"></h1>
-        <p id="uid2" style="font-size: 18px;"></p>
-            <p id="displayData"></p>
-            <div style="margin-top: 10px;">
-                <button onclick="signin()">Sign in</button>
-                <!-- <button onclick="getData()">Display message</button> -->
-                <button id="pushdata" onclick="pushData()">Push message</button>
-                <button onclick="removeData()">Delete message</button>
-            </div>
-        <textarea class="inputMsg" onclick="entrybox()" onblur="resize()" type="text" id="entry" size=40 maxlength=280 placeholder="Write message here..."></textarea>
-        <div id="outputMsg" style="margin-top:10px;">
-        </div> 
-    </body>
-
-    <style>
-        body{
-            background-color: rgb(22,33,44);
-            /* rgb(128, 204, 255) */
-            font-family: 'Source Sans Pro', sans-serif;
-            color: white;
-            margin-left: 10px;
-        }
-        input{
-            margin-top: 20px;
-        }
-        button{
-            margin-right:10px;
-            height:35px;
-            width: 110px;
-            border-radius: 25px;
-            border-color: rgb(57,161,242);
-            background-color: rgb(57,161,242);
-            color: white;
-            outline: none;
-        }
-        button:hover{
-            border-color:rgb(51, 147, 220);
-            background-color: rgb(51, 147, 220);
-        }
-        #uidImg{
-            /* border: black 2px solid; */
-            border-radius: 50%;
-            position: relative;
-            /* padding: 5px; */
-            float:left;
-            background-color: white;
-        }
-        .inputMsg{
-            /* border-radius: 10px; */
-            margin-top: 10px;
-            height: 60px; 
-            width: 500px;
-            font-size: 15px;
-            border-radius: 5px;
-            background-color: rgb(198, 229, 250);
-            border-color: rgb(185, 223, 249);
-            outline: none;
-            resize: none;
-        }
-        .card{
-            margin-top:5px;
-            padding-left: 3px;
-            /* height: 100px; */
-            width:500px;
-            border-width:2px;
-            border-style:solid;
-            border-color:rgb(147, 147, 147);
-            border-radius: 10px;
-            color: white;
-            word-break: break-all;
-        }
-    </style>
-    
-    <!-- HERE IS THE JAVASCRIPT TO CONNECT TO YOUR FIREBASE -->
-    <script>
-        // Your web app's Firebase configuration
-        var config = {
-            apiKey: "AIzaSyDiugQRzZw_xml3D05Xv2kbnsp643z-grY",
-            authDomain: "basic-41a8d.firebaseapp.com",
-            databaseURL: "https://basic-41a8d.firebaseio.com",
-            projectId: "basic-41a8d",
-            storageBucket: "basic-41a8d.appspot.com",
-            messagingSenderId: "773162564169",
-            appId: "1:773162564169:web:05ab52d8cef59307cddd98",
-            measurementId: "G-57SPDCGJBG"
-          };
-        firebase.initializeApp(config);
-               
-        // Check to see if you are logged in
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user == null) {
-                document.getElementById("uid").innerHTML = "Not logged in";
-                return;
-            } else {
-                userId = user.displayName // you can also get .displayName, .photoURL, .email
-                document.getElementById("uid").innerHTML = userId; // display Google uid on page
-                userId2 = "Email: "+ user.email;
-                document.getElementById("uid2").innerHTML = userId2;
-                userfb = userId2.split(".").join("_");
-                userImg = user.photoURL;
-                document.getElementById("uidImg").src = userImg;
-                getData()
-            } // end user null check
-        }); // end check auth state
-        
-        //FUNCTION TO DISPLAY USER DATA
-        function getData() {
-            var userId = document.getElementById("uid").innerHTML;
-            firebase.database().ref('/messages/' + userfb).once('value', function(snapshot) {
-            var data = snapshot.val();
-            var i;
-            var displayMsg = document.getElementById("outputMsg")
-            displayMsg.innerHTML = ""
-            for (i=snapshot.numChildren()-1; i >= 0; i--){
-                var lastindex =  Object.keys(snapshot.val())[i];
-                displayMsg.innerHTML += "<div class='card'><p>" + snapshot.val()[lastindex].message +"</p> <p>Time Posted: " + snapshot.val()[lastindex].time +"</p></div>"
-                }
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>     
+        <script>
+            //FAB:
+            document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.fixed-action-btn');
+            var instances = M.FloatingActionButton.init(elems, {
+                direction: 'up'
             });
-        }
-
-        // HERE IS THE FUNCTION TO SHOW HOW TO PUSH/ADD NEW USER DATA TO EXISTING DATABASE
-        function pushData() {
-            var message = document.getElementById("entry").value;
-            var today = new Date();
-            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            var js_time = date+' '+time;
-            var messageid = firebase.database().ref('messages/' + userfb + "/").push({message: message, time: js_time});
-            document.getElementById("entry").value = "";
-            getData()
-        }
-
-        // HERE IS THE FUNCTION TO SHOW HOW TO REMOVE USER DATA FROM EXISTING DATABASE - BE CAREFUL!
-        function removeData() {
-            firebase.database().ref('/messages/' + userfb).once('value', function(snapshot) {
-                var messageid = firebase.database().ref('messages/' + userfb + "/" + Object.keys(snapshot.val())[snapshot.numChildren()-1]).remove();
-                getData()
-           });
-            
-        }
-        
-        function signin() {
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithRedirect(provider).then(function(result) { 
-                window.location.replace("fbtest.html");
             });
-        }
-
-        function entrybox(){
-            var inputBox = document.getElementById("entry").style.height = "100";
-        }
-
-        function resize(){
-            var inputBox = document.getElementById("entry").style.height = "60";
-        }
-
-        var input = document.getElementById("entry");
-            input.addEventListener("keyup", function(event) {
-            if (event.keyCode == 13) {
-                pushData()
-                event.preventDefault();
+        </script>
+        <style>
+            .nav-wrapper{
+                background-color: rgb(189, 129, 86);
             }
-        });
-    </script>
+            .card-wrapper{
+                margin-top:20px;
+            }
+        </style>
+    </head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper">
+          <ul id="nav-mobile" class="left hide-on-med-and-down">
+  
+            <li><img src="search.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px; width:110px;" href="sass.html">Search</a></li>
+            <li><img src="home.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px;width:98px;" href="sass.html">Home</a></li>
+            <li><img src="topics.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px;width:110px;"href="badges.html">Topics</a></li>
+            <li><img src="friends.png" width="45px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px;width:130px;" href="collapsible.html">Friends</a></li>
+          </ul>
+          <a href="#" class="right brand-logo">Trivia Night Logo</a>
+        </div>
+    </nav>
+
+    <div class="card-wrapper">
+        <div class="row" style="float:left;margin-left:6%;">
+            <div class="col s12 m6" >
+                <div class="card blue darken-5" style="width:250px; height:500px; border-radius: 15px;">
+                <div class="card-content white-text">
+                <img src="pfp.png" width="70px" height="70px" style="float:left;">
+                <p style="padding-left:80px; padding-top:15px;font-size: 20px;">Username</p>
+                <p style="padding-left:80px; padding-top:0px; font-size: 10px;text-decoration: underline;">edit profile</p>
+                <h4 style="float:left;">Level: 42</h4>
+                <div style="float:left;height:20px;width:200px;background-image: linear-gradient(to right, rgb(0, 17, 255) ,white, white); /* Standard"></div>
+                <h4 style="float:left;">Coins: 18</h4>
+                <h4 style="float:left;">Daily XP: 7</h4>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="float:left;margin-left:5%;">
+            <div class="col s12 m6">
+                <div class="card blue darken-5" style="width:500px; height:500px;border-radius: 15px;">
+                <div class="card-content white-text">
+                <h3 style="text-align: center;">Game History</h3>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                <div style="width:20px;height:20px;border:solid;margin-top:20px;"></div>
+                </div>
+                </div>
+            </div>
+        </div>  
+        <div class="row" style="float:left;margin-left:5%;">
+            <div class="col s12 m6">
+                <div class="card blue darken-5" style="width:300px; height:500px;border-radius: 15px;">
+                <div class="card-content white-text">
+                    <h3 style="text-align:center;">Leaderboard</h3>
+                    <h6 style="float:left;text-decoration: underline;">Global</h6>
+                    <h6 style="float:left;padding-left:30px;">Local</h6>
+                    <h6 style="float:left;padding-left:30px;">Friends</h6>
+                    <p style="padding-top:50px;">1. </p>
+                    <p style="padding-top:10px;">2. </p>
+                    <p style="padding-top:10px;">3. </p>
+                    <p style="padding-top:10px;">4. </p>
+                </div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+    <div class="fixed-action-btn">
+            <a class="btn-floating btn-large red">
+              <i class="large material-icons">a</i>
+            </a>
+            <ul>
+              <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
+              <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+              <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+              <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+            </ul>
+    </div>  
+</body>
 </html>
