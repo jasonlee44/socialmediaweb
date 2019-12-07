@@ -2,14 +2,24 @@
     <head>
         <!-- Compiled and minified CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Icons -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <!-- Compiled and minified JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>     
-        <script>
+       
+       <script>
             //FAB:
             document.addEventListener('DOMContentLoaded', function() {
             var elems = document.querySelectorAll('.fixed-action-btn');
             var instances = M.FloatingActionButton.init(elems, {
                 direction: 'up'
+            });
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems, {
+                edge: 'right'
             });
             });
         </script>
@@ -27,7 +37,6 @@
     <nav>
         <div class="nav-wrapper">
           <ul id="nav-mobile" class="left hide-on-med-and-down">
-  
             <li><img src="search.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px; width:110px;" href="sass.html">Search</a></li>
             <li><img src="home.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px;width:98px;" href="sass.html">Home</a></li>
             <li><img src="topics.png" width="30px" height="30px" style="float:left; margin-top:15px;"><a style="font-size:20px;width:110px;"href="badges.html">Topics</a></li>
@@ -36,6 +45,7 @@
           <a href="#" class="right brand-logo">Trivia Night Logo</a>
         </div>
     </nav>
+
 
     <div class="card-wrapper">
         <div class="row" style="float:left;margin-left:6%;">
@@ -46,8 +56,10 @@
                 <p style="padding-left:80px; padding-top:15px;font-size: 20px;">Username</p>
                 <p style="padding-left:80px; padding-top:0px; font-size: 10px;text-decoration: underline;">edit profile</p>
                 <h4 style="float:left;">Level: 42</h4>
-                <div style="float:left;height:20px;width:200px;background-image: linear-gradient(to right, rgb(0, 17, 255) ,white, white); /* Standard"></div>
-                <h4 style="float:left;">Coins: 18</h4>
+                <div class="progress" style="height:9;">
+                    <div class="determinate" style="width:70%;background-color:rgb(0, 0, 0)"></div>
+                </div>
+                <h4 style="float:left;margin-top:1%;">Coins: 18</h4>
                 <h4 style="float:left;">Daily XP: 7</h4>
                 </div>
                 </div>
@@ -85,16 +97,16 @@
             </div>
         </div> 
     </div> 
+
     <div class="fixed-action-btn">
-            <a class="btn-floating btn-large red">
-              <i class="large material-icons">a</i>
-            </a>
-            <ul>
-              <li><a class="btn-floating red"><i class="material-icons">insert_chart</i></a></li>
-              <li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
-              <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
-              <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
-            </ul>
-    </div>  
+        <a class="sidenav-trigger btn-floating btn-large orange" data-target="slide-out" href="#">
+            <i class="large material-icons">chat_bubble</i>
+        </a>
+    </div>
+
+    <!-- Sliding Sidenav -->
+    <ul id="slide-out" class="sidenav">
+
+    </ul>
 </body>
 </html>
