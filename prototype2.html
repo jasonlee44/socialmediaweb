@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    </head>
+    <style>
+        body{
+            background-color: rgb(233,235,238);
+        }
+        .sidenav-btn{
+            color:black;
+            background-color: transparent;
+            box-shadow: none;
+            width:10%;
+            text-align: left;;
+        }
+        .sidenav-btn:hover{
+            background-color: rgb(245,246,247);
+            box-shadow:none;
+        }
+    </style>
+    <body>
+        <nav style="margin:0;">
+            <div class="nav-wrapper green">
+                <a href="#" class="brand-logo" style="margin-left:1%;">Logo</a>
+                <ul style="margin-left:5%;width:95%" id="nav-mobile" class="left hide-on-med-and-down">
+                <li style="width:50%">
+                <form>
+                    <div class="input-field" style="margin-left:3%;">
+                        <input id="search" type="search" placeholder="Search" required>
+                        <label class="label-icon" for="search"style="margin-left:2%;"><i class="material-icons">search</i></label>
+                        <i class="material-icons">close</i>
+                    </div>
+                    </form>
+                </li>
+                <li class="right"><a href="#">Settings</a></li>
+                <li class="right"><a href="#">Friends</a></li>
+                <li class="right"><a href="#">Home</a></li>
+                <li class="right"><a href="#">Profile</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="side-nav" style="margin-left:3%;">
+            <li><a class="sidenav-btn btn">button</a></li>
+            <li><a class="sidenav-btn btn">button</a></li>
+            <li><a class="sidenav-btn btn">button</a></li>
+        </div>
+    </body>
+</html>
