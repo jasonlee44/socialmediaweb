@@ -103,7 +103,7 @@
             } else {
                 userId = user.displayName // you can also get .displayName, .photoURL, .email
                 document.getElementById("uid").innerHTML = userId; // display Google uid on page
-                userId2 = "Email: "+ user.email;
+                userId2 = ""+ user.email;
                 document.getElementById("uid2").innerHTML = userId2;
                 userfb = userId2.split(".").join("_");
                 userImg = user.photoURL;
